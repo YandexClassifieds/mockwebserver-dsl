@@ -73,7 +73,7 @@ webServerRule.routing {
 ```kotlin
 webServerRule.routing {
     getDraft().assertCalled()
-    getOffer().assertBody(equalsTo(getOfferBody()))
+    getOffer().assert { body(equalsTo(getOfferBody())) }
 }
 ```
 
