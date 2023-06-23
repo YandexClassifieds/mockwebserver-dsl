@@ -68,4 +68,12 @@ publishing {
 
 dependencies {
     api("com.squareup.okhttp3:mockwebserver:4.10.0")
+
+    // Use JUnit Jupiter for testing.
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+}
+
+tasks.named<Test>("test") {
+    //@org.junit.Rule works in JUnit 4
+    useJUnit()
 }

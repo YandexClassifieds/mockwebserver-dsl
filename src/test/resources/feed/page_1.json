@@ -1,0 +1,22 @@
+{
+    "meta": {
+        "page": 1,
+        "limit": 2,
+        "total": 1707
+    },
+    "error": {},
+    "data": [
+        {
+            "id": "1337498609819021312",
+            "created_at": "2020-12-11T20:44:52.000Z",
+            "text": "Feed 1",
+            "viewed": false
+        },
+        {
+            "id": "1258085245091368960",
+            "created_at": "2020-05-06T17:24:31.000Z",
+            "text": "Feed 2",
+            "viewed": false
+        }
+    ]
+}
