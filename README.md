@@ -1,5 +1,6 @@
 MockWebServer DSL
 =================
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.yandex.classifieds/mockwebserver-dsl/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.yandex.classifieds/mockwebserver-dsl)
 
 **MockWebServer DSL** is a Kotlin library for testing Android apps.
 The library provides powerful DSL for [MockWebServer](https://github.com/square/okhttp/tree/master/mockwebserver). So, you can mock your http-client easy and concise.
