@@ -17,10 +17,10 @@ fun Route.assertCalled(matcher: Matcher<Int>): Route =
 fun Route.baseAssertCalled(matcher: Matcher<CountingRoute>): Route =
     assert(Route::count, matcher)
 
-fun Route.assert(mode: AssertionMode = times(1), requestDefinition: RequestDefinition): Route =
+fun Route.assert(mode: AssertionMode<RecordedRequest> = times(1), requestDefinition: RequestDefinition): Route =
     assert(request(requestDefinition), mode)
 
-fun Route.assert(matcher: Matcher<RecordedRequest>, mode: AssertionMode = times(1)): Route =
+fun Route.assert(matcher: Matcher<RecordedRequest>, mode: AssertionMode<RecordedRequest> = times(1)): Route =
     baseAssert(RecordedRequestsMatcher(matcher, mode))
 
 fun Route.baseAssert(matcher: Matcher<RecordingRoute>): Route =
@@ -63,7 +63,7 @@ class RequestCountMatcher(
 
 class RecordedRequestsMatcher(
     private val matcher: Matcher<RecordedRequest>,
-    private val assertionMode: AssertionMode
+    private val assertionMode: AssertionMode<RecordedRequest>
 ) : TypeSafeDiagnosingMatcher<RecordingRoute>() {
 
     override fun describeTo(description: Description) {
@@ -91,113 +91,5 @@ class RecordedRequestsMatcher(
             }
         }
         return matches
-    }
-}
-
-interface AssertionMode {
-    fun describeTo(matcher: Matcher<RecordedRequest>, description: Description)
-    fun matches(
-        matcher: Matcher<RecordedRequest>,
-        recordedRequests: List<RecordedRequest>,
-        mismatchDescription: Description
-    ): Boolean
-}
-
-fun times(count: Int, exactly: Boolean = true) = object : AssertionMode {
-
-    override fun describeTo(matcher: Matcher<RecordedRequest>, description: Description) {
-        description
-            .appendText("containing ")
-            .apply { if (exactly) appendText("exactly ") }
-            .appendValue(count)
-            .appendText(" item(s) that is ")
-            .appendDescriptionOf(matcher)
-    }
-
-    override fun matches(
-        matcher: Matcher<RecordedRequest>,
-        recordedRequests: List<RecordedRequest>,
-        mismatchDescription: Description
-    ): Boolean {
-        val notMatched: List<Pair<Int, RecordedRequest>> = recordedRequests.filterMatched(matcher)
-        val matchedCount = recordedRequests.size - notMatched.size
-        if (count != matchedCount || (exactly && notMatched.isNotEmpty())) {
-            mismatchDescription
-                .appendText("contained ")
-                .appendValue(matchedCount)
-                .appendText(" matched item(s)")
-
-            if (notMatched.isNotEmpty()) {
-                mismatchDescription.appendText("\nNot matched request(s) found: ")
-                notMatched.forEach { (index, request) ->
-                    mismatchDescription.appendText("\n[").appendText(index.toString()).appendText("] ")
-                    matcher.describeMismatch(request, mismatchDescription)
-                }
-            }
-            return false
-        }
-
-        return true
-    }
-
-    private fun List<RecordedRequest>.filterMatched(matcher: Matcher<RecordedRequest>) =
-        mapIndexedNotNull { index, request -> if (!matcher.matches(request)) index to request else null }
-}
-
-@Suppress("StringLiteralDuplication")
-fun index(index: Int) = object : AssertionMode {
-
-    override fun describeTo(matcher: Matcher<RecordedRequest>, description: Description) {
-        description
-            .appendText("containing item[")
-            .appendText(index.toString())
-            .appendText( "] that is ")
-            .appendDescriptionOf(matcher)
-    }
-
-    override fun matches(
-        matcher: Matcher<RecordedRequest>,
-        recordedRequests: List<RecordedRequest>,
-        mismatchDescription: Description
-    ): Boolean {
-        if (recordedRequests.isEmpty()) {
-            mismatchDescription.appendText("was empty")
-            return false
-        }
-        if (index !in recordedRequests.indices) {
-            mismatchDescription.appendText("index not in ").appendText(recordedRequests.indices.toString())
-            return false
-        }
-        if (!matcher.matches(recordedRequests[index])) {
-            matcher.describeMismatch(recordedRequests[index], mismatchDescription)
-            return false
-        }
-        return true
-    }
-}
-
-@Suppress("StringLiteralDuplication")
-fun last() = object : AssertionMode {
-
-    override fun describeTo(matcher: Matcher<RecordedRequest>, description: Description) {
-        description
-            .appendText("containing last item that is ")
-            .appendDescriptionOf(matcher)
-    }
-
-    override fun matches(
-        matcher: Matcher<RecordedRequest>,
-        recordedRequests: List<RecordedRequest>,
-        mismatchDescription: Description
-    ): Boolean {
-        if (recordedRequests.isEmpty()) {
-            mismatchDescription.appendText("was empty")
-            return false
-        }
-        if (!matcher.matches(recordedRequests.last())) {
-            matcher.describeMismatch(recordedRequests.last(), mismatchDescription)
-            return false
-        }
-        return true
     }
 }
