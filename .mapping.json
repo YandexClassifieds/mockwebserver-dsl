@@ -1,4 +1,5 @@
 {
+  ".":"classifieds/mobile/mock-web-server-dsl",
   ".gitignore":"classifieds/mobile/mock-web-server-dsl/.gitignore",
   "AUTHORS":"classifieds/mobile/mock-web-server-dsl/AUTHORS",
   "CONTRIBUTING.md":"classifieds/mobile/mock-web-server-dsl/CONTRIBUTING.md",
