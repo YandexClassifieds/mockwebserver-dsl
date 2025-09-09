@@ -97,5 +97,17 @@ We welcome contributions to this project!
 
 [Contributing policy](CONTRIBUTING.md)
 
+
+### Releasing new versions
+
+New versions are released by hand by project maintainers. To release a new version, follow these steps:
+1. Update the version number in the `build.gradle.kts` file.
+2. Ensure all tests pass and the project builds successfully.
+3. Ensure you have the necessary permissions to publish to Maven Central.
+4. Run the `./gradlew centralBundle` to create artifacts.
+5. Log into [Maven Central](https://central.sonatype.com/).
+6. Click "Publish Component" and select `build/distributions/mockwebserver-dsl-<version>.zip`.
+7. After a validation period, click "Publish" to make the artifacts available.
+
 ### License 📄
 [License](LICENSE)

@@ -54,16 +54,29 @@ publishing {
     }
     repositories {
         maven {
-            name = "sonatype"
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
-            credentials(PasswordCredentials::class)
-        }
-        maven {
             name = "bucket"
             url = uri("https://bucket.yandex-team.ru/v1/maven/yandex_vertis_releases")
 	        credentials(PasswordCredentials::class)
         }
+        maven {
+            name = "localStaging"
+            url = uri(layout.buildDirectory.dir("stagingRepo"))
+        }
     }
+}
+
+val publishToLocal = tasks.named("publishMavenPublicationToLocalStagingRepository")
+
+tasks.register<Zip>("centralBundle") {
+    group = "publication"
+    description = "Create Maven Central bundle zip from local staging repo"
+
+    from(layout.buildDirectory.dir("stagingRepo"))
+    archiveFileName.set("central-bundle.zip")
+    destinationDirectory.set(layout.buildDirectory.dir("distributions"))
+
+    // make sure publish runs before zipping
+    dependsOn(publishToLocal)
 }
 
 dependencies {
