@@ -67,6 +67,27 @@ class DemoTest {
         )
     }
 
+    @Test
+    fun recordedRequestsReturnsSnapshotWhileRequestsAreRecorded() {
+        val recordingRoute = webServerRule.routing {
+            getFeed(page = 1, assetPath = "feed/page_1.json")
+        }.record()
+
+        repeat(2) {
+            check(request("/feed?page=1"))
+        }
+
+        val iterator = recordingRoute.recordedRequests.iterator()
+        iterator.next()
+
+        check(request("/feed?page=1"))
+
+        assertTrue(iterator.hasNext())
+        iterator.next()
+        assertFalse(iterator.hasNext())
+        assertEquals(3, recordingRoute.recordedRequests.size)
+    }
+
     private fun request(link: String) = Request.Builder()
         .url(mockServerUrl.resolve(link)!!)
         .header("User-Agent", "DemoTest.kt")

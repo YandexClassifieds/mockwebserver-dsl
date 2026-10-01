@@ -75,7 +75,7 @@ class RecordingRoute(
 
     private val _recordedRequests: MutableList<RecordedRequest> =
         Collections.synchronizedList(ArrayList<RecordedRequest>())
-    val recordedRequests: List<RecordedRequest> get() = _recordedRequests
+    val recordedRequests: List<RecordedRequest> get() = ArrayList(_recordedRequests)
 
     override fun onResolve(request: RecordedRequest, response: MockResponse, route: Route) {
         if (this.route == route) {
